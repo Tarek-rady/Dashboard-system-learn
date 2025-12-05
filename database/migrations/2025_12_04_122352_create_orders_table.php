@@ -1,0 +1,51 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignId('vendor')->nullable()->references('id')->on('vendors')->cascadeOnDelete();
+            $table->integer('status')->default(1);
+            $table->integer('code')->nullable();
+            $table->integer('payment');
+            $table->timestamp('date_requested')->nullable();
+            $table->timestamp('date_accepted')->nullable();
+            $table->timestamp('date_completed')->nullable();
+            $table->timestamp('date_implementation')->nullable();
+            $table->timestamp('date_cancled')->nullable();
+            $table->decimal('cost' , 8 , 2)->default(0);
+            $table->decimal('total_discount' , 8 , 2)->nullable();
+            $table->decimal('tax' , 8 , 2)->default(0);
+            $table->decimal('total' , 8 , 2)->default(0);
+            $table->string('coupon')->nullable();
+            $table->longText('msg')->nullable();
+            $table->boolean('read')->default(0);
+            $table->enum('time_type' , ['immediate' , 'schedule'])->nullable();
+            $table->date('date')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
+            $table->string('location')->nullable();
+
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('orders');
+    }
+};

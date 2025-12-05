@@ -2,16 +2,83 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Service;
+use Carbon\CarbonImmutable;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class VendorSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        DB::disableQueryLog();
+        Model::unsetEventDispatcher();
+
+        $fake         = Factory::create();
+        $totalVendors = 30000;
+        $chunkSize    = 2000;
+
+        $startDate = CarbonImmutable::now();
+        $vendors = [];
+
+        for ($i = 1; $i <= $totalVendors; $i++) {
+
+            $createdAt = $startDate->addMonths(rand(1, 12));
+
+            $vendors[] = [
+                'name'       => "Vendor {$i}",
+                'email'      => "vendor{$i}@example.com",
+                'phone'      => "010" . str_pad($i, 7, '0', STR_PAD_LEFT),
+                'img'        => null,
+                'email_verified_at' => $createdAt,
+                'password'   => 'password',
+                'fcm_token'  => Str::random(32),
+                'remember_token' => Str::random(10),
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ];
+
+            if (count($vendors) >= $chunkSize) {
+                DB::table('vendors')->insert($vendors);
+                $vendors = [];
+            }
+        }
+
+        if (!empty($vendors)) {
+            DB::table('vendors')->insert($vendors);
+        }
+
+        $vendorIds = DB::table('vendors')->pluck('id')->all();
+
+        $serviceIds = DB::table('services')->pluck('id')->all();
+
+        $relationRows = [];
+        $chunkSize = 5000;
+
+        foreach ($vendorIds as $vendorId) {
+
+            $selected = array_rand($serviceIds, 10);
+
+            foreach ($selected as $index) {
+                $relationRows[] = [
+                    'vendor_id'  => $vendorId,
+                    'service_id' => $serviceIds[$index],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            if (count($relationRows) >= $chunkSize) {
+                DB::table('vendor_services')->insert($relationRows);
+                $relationRows = [];
+            }
+        }
+
+        if (!empty($relationRows)) {
+            DB::table('vendor_services')->insert($relationRows);
+        }
     }
 }

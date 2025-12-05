@@ -20,23 +20,24 @@ class UserSeeder extends Seeder
         Model::unsetEventDispatcher();
 
         $fake       = Factory::create();
-        $totalUsers = 100;
+        $totalUsers = 40000;
         $chunkSize  = 2000;
 
-        $perMonth = intdiv($totalUsers, 12);
 
 
-        $createdAt = CarbonImmutable::now();
+        $startDate = CarbonImmutable::now();
         $users = [];
 
             for ($i = 0; $i < $totalUsers; $i++) {
+                $createdAt = $startDate->addMonths(rand(1,12));
+
                 $users[] = [
                     'name'              => $fake->name(),
                     'email'             => $fake->unique()->email(),
                     'phone'             => '010' . $fake->unique()->numberBetween('1000000' , 9999999),
                     'img'               => null,
                     'email_verified_at' => $createdAt,
-                    'password'          => bcrypt('password'),
+                    'password'          => 'password',
                     'fcm_token'         => Str::random(32),
                     'remember_token'    => Str::random(10),
                     'created_at'        => $createdAt,
