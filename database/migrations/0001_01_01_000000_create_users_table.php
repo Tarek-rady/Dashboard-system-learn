@@ -21,6 +21,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('fcm_token')->nullable();
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
+            $table->string('location')->nullable();
             $table->foreignId('city_id')->nullable()->references('id')->on('cities')->cascadeOnDelete();
             $table->rememberToken();
             $table->timestamps();

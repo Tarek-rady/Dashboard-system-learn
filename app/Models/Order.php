@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentEnum;
 use App\Observers\OrderObserver;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,5 +20,10 @@ class Order extends Model
     protected static function booted(){
         static::observe(OrderObserver::class);
     }
+
+
+    protected $casts = [
+        'payment' => PaymentEnum::class
+    ];
 
 }

@@ -21,18 +21,16 @@ class Service extends Model
            $q->where('is_active' , 1);
         });
 
-        static::addGlobalScope('category' , function($q){
-           $q->whereNull('category_id');
-        });
+   
 
-        
+
     }
 
 
    protected function casts() : array {
 
       return [
-         'is_active' => 'boolean' ,
+         'is_active' =>'boolean' ,
       ];
    }
 

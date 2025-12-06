@@ -38,7 +38,9 @@ class VendorSeeder extends Seeder
                 'fcm_token'  => Str::random(32),
                 'type'       => rand(1,3) ,
                 'is_active' => rand(0,1) ,
-
+                'lat'               => '30.9421611' ,
+                'lng'               => '31.2950298' ,
+                'location'          => 'اجا-الدقهليه' ,
                 'remember_token' => Str::random(10),
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,

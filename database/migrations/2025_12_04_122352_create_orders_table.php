@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
-            $table->foreignId('vendor')->nullable()->references('id')->on('vendors')->cascadeOnDelete();
+            $table->foreignId('vendor_id')->nullable()->references('id')->on('vendors')->cascadeOnDelete();
             $table->integer('status')->default(1);
-            $table->integer('code')->nullable();
-            $table->integer('payment');
+            $table->string('code')->nullable();
+            $table->integer('payment')->default();
             $table->timestamp('date_requested')->nullable();
             $table->timestamp('date_accepted')->nullable();
             $table->timestamp('date_completed')->nullable();

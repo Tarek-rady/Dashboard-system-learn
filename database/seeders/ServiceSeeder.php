@@ -35,7 +35,6 @@ class ServiceSeeder extends Seeder
                     'name'        => 'Service From ' . $categoryId,
                     'category_id' => $categoryId,
                     'price'       => rand(50, 100),
-                    'is_active' => rand(0,1) ,
                     'created_at'  => $createdAt,
                     'updated_at'  => $createdAt,
                 ];

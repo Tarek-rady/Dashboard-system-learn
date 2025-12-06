@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('fcm_token')->nullable();
             $table->integer('type')->default(1);
             $table->boolean('is_active')->default(0);
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
+            $table->string('location')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
