@@ -31,6 +31,7 @@ return new class extends Migration
             $table->longText('msg')->nullable();
             $table->boolean('read')->default(0);
             $table->enum('time_type' , ['immediate' , 'schedule'])->nullable();
+            $table->integer('res_type')->default(1);
             $table->date('date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();

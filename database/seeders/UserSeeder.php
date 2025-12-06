@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
         Model::unsetEventDispatcher();
 
         $fake       = Factory::create();
-        $totalUsers = 40000;
+        $totalUsers = 60000;
         $chunkSize  = 2000;
 
 
@@ -32,7 +32,8 @@ class UserSeeder extends Seeder
                 $createdAt = $startDate->addMonths(rand(1,12));
 
                 $users[] = [
-                    'name'              => $fake->name(),
+                    'f_name'              => $fake->firstName(),
+                    'l_name'              => $fake->lastName(),
                     'email'             => $fake->unique()->email(),
                     'phone'             => '010' . $fake->unique()->numberBetween('1000000' , 9999999),
                     'img'               => null,

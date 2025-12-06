@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('category_id')->nullable()->references('id')->on('categories');
             $table->decimal('price' , 12 , 2);
+            $table->boolean('is_active')->default(0);
+
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class VendorSeeder extends Seeder
         Model::unsetEventDispatcher();
 
         $fake         = Factory::create();
-        $totalVendors = 30000;
+        $totalVendors = 80000;
         $chunkSize    = 2000;
 
         $startDate = CarbonImmutable::now();
@@ -36,6 +36,9 @@ class VendorSeeder extends Seeder
                 'email_verified_at' => $createdAt,
                 'password'   => 'password',
                 'fcm_token'  => Str::random(32),
+                'type'       => rand(1,3) ,
+                'is_active' => rand(0,1) ,
+
                 'remember_token' => Str::random(10),
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,

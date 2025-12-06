@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('coupons', function (Blueprint $table) {
+        Schema::create('product_tags', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->nullable()->references('id')->on('products');
+            $table->foreignId('tag_id')->nullable()->references('id')->on('tags');
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('coupons');
+        Schema::dropIfExists('product_tags');
     }
 };

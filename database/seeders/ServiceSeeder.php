@@ -32,9 +32,10 @@ class ServiceSeeder extends Seeder
                 $createdAt = $now->addMonths(rand(0, 11));
 
                 $rows[] = [
-                    'name'        => $fake->sentence(2),
+                    'name'        => 'Service From ' . $categoryId,
                     'category_id' => $categoryId,
                     'price'       => rand(50, 100),
+                    'is_active' => rand(0,1) ,
                     'created_at'  => $createdAt,
                     'updated_at'  => $createdAt,
                 ];

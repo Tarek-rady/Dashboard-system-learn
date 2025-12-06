@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('rates', function (Blueprint $table) {
             $table->id();
-    
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
+            $table->morphs('rateable');
+            $table->integer('rate');
+            $table->string('comment');
             $table->timestamps();
         });
     }

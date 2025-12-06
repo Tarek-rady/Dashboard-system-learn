@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->references('id')->on('orders')->cascadeOnDelete();
-            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreignId('vendor_id')->references('id')->on('vendors')->cascadeOnDelete();
+            $table->foreignId('order_id')->nullable()->references('id')->on('orders')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignId('vendor_id')->nullable()->references('id')->on('vendors')->cascadeOnDelete();
             $table->integer('status')->default(1);
             $table->timestamps();
         });
