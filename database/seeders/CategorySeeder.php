@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
         DB::disableQueryLog();
         Model::unsetEventDispatcher();
 
-        $total = 100;
+        $total = 5;
         $chunkSize = 2000;
         $fake = Factory::create();
         $now = CarbonImmutable::now();

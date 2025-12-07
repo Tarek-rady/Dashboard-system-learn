@@ -37,7 +37,7 @@ class VendorSeeder extends Seeder
                 'password'   => 'password',
                 'fcm_token'  => Str::random(32),
                 'type'       => rand(1,3) ,
-                'is_active' => rand(0,1) ,
+                'is_active'  => 1 ,
                 'lat'               => '30.9421611' ,
                 'lng'               => '31.2950298' ,
                 'location'          => 'اجا-الدقهليه' ,
@@ -65,7 +65,7 @@ class VendorSeeder extends Seeder
 
         foreach ($vendorIds as $vendorId) {
 
-            $selected = array_rand($serviceIds, 10);
+            $selected = array_rand($serviceIds, 6);
 
             foreach ($selected as $index) {
                 $relationRows[] = [

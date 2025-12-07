@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Carbon\CarbonImmutable;
-use Faker\Factory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,40 +12,38 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
         DB::disableQueryLog();
-        Model::unsetEventDispatcher();
 
         $categoryIds = Category::pluck('id')->all();
+        if (empty($categoryIds)) return;
 
-        $fake      = Factory::create();
-        $chunkSize = 1000;
-        $rows      = [];
-        $now       = CarbonImmutable::now();
+        $now = CarbonImmutable::now();
 
-        foreach ($categoryIds as $categoryId) {
+        $services = [
+            'Cleaning Service',
+            'Home Painting',
+            'Electric Repair',
+            'Plumbing Fix',
+            'Deep Cleaning',
+            'Garden Maintenance',
+            'Air Conditioner Repair',
+            'Furniture Assembly',
+            'Water Tank Cleaning',
+            'Pest Control'
+        ];
 
-            $servicesCount = rand(3, 8);
+        $rows = [];
 
-            for ($i = 0; $i < $servicesCount; $i++) {
+        foreach ($services as $serviceName) {
 
-                $createdAt = $now->addMonths(rand(0, 11));
-
-                $rows[] = [
-                    'name'        => 'Service From ' . $categoryId,
-                    'category_id' => $categoryId,
-                    'price'       => rand(50, 100),
-                    'created_at'  => $createdAt,
-                    'updated_at'  => $createdAt,
-                ];
-
-                if (count($rows) >= $chunkSize) {
-                    DB::table('services')->insert($rows);
-                    $rows = [];
-                }
-            }
+            $rows[] = [
+                'name'        => $serviceName,
+                'category_id' => $categoryIds[array_rand($categoryIds)],
+                'price'       => rand(50, 300),
+                'created_at'  => $now,
+                'updated_at'  => $now,
+            ];
         }
 
-        if (!empty($rows)) {
-            DB::table('services')->insert($rows);
-        }
+        DB::table('services')->insert($rows);
     }
 }

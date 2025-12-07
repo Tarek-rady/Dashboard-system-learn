@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\SendOfferToVendor;
 use App\Models\Order;
 use App\Models\Service;
 use Carbon\CarbonImmutable;
@@ -12,7 +13,6 @@ class ReservationService
     public function createReservation(array $data, $request): int
     {
         return DB::transaction(function () use ($data, $request) {
-
             $reservationId = $this->storeReservation($data);
             $subTotal = $this->storeReservationServices($reservationId, $request->services);
             $this->storeOffers($reservationId, $request->services, $data);
@@ -62,32 +62,16 @@ class ReservationService
 
     private function storeOffers(int $reservationId, array $serviceIds, array $data): void
     {
-        $requiredCount = count($serviceIds);
+
         $userId = auth()->id();
 
-        $vendorIds = DB::table('vendor_services as vs')
-            ->join('vendors as v', 'v.id', '=', 'vs.vendor_id')
-            ->whereIn('v.is_active', [0, 1])
-            // ->where('v.type', $data['res_type'])
-            ->whereNotNull('v.fcm_token')
-            ->whereIn('vs.service_id', $serviceIds)
-            ->groupBy('vs.vendor_id')
-            ->havingRaw('COUNT(DISTINCT vs.service_id) = ?', [$requiredCount])
-            ->pluck('vs.vendor_id')
-            ->unique()
-            ->values();
+          dispatch(new SendOfferToVendor(
+                $reservationId ,
+                $userId ,
+                $serviceIds ,
+                $data ,
+          ));
 
-        $offers = $vendorIds->map(fn($vendorId) => [
-            'order_id'   => $reservationId,
-            'user_id'    => $userId,
-            'vendor_id'  => $vendorId,
-            'status'     => 1,
-            'created_at' => now(),
-        ]);
-
-        foreach ($offers->chunk(1000) as $chunk) {
-            DB::table('offers')->insert($chunk->toArray());
-        }
     }
 
     private function calcReservation($cost , $reservationId){
@@ -108,4 +92,6 @@ class ReservationService
 
 
     }
+
+
 }
