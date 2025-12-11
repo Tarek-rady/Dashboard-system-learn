@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Events\ReservationCreatedEvent;
 use App\Jobs\CalcReservationJob;
 use App\Jobs\SendOfferToVendor;
 use App\Models\Order;
@@ -13,20 +12,36 @@ use Illuminate\Support\Str;
 
 class ReservationService
 {
-
-
-
     public function createReservation(array $data, $request): int
     {
         return DB::transaction(function () use ($data, $request) {
 
             $reservationId = $this->storeReservation($data);
             $subTotal = $this->storeReservationServices($reservationId, $request->services);
-            $this->dispatchEventsAfterCommit($reservationId , $request->services , $subTotal , $data);
+            $this->dispatchJobsAfterCommit($reservationId, $subTotal, $request->services, $data);
             return $reservationId;
         });
     }
 
+    private function dispatchJobsAfterCommit($reservationId, $subTotal, $serviceIds, $data)
+    {
+        $userId = auth()->id();
+
+
+
+
+        dispatch(new SendOfferToVendor(
+            $reservationId,
+            $userId,
+            $serviceIds,
+            $data
+        ))->afterCommit();
+
+        dispatch(new CalcReservationJob(
+            $reservationId,
+            $subTotal
+        ))->afterCommit();
+    }
 
     private function storeReservation(array $data): int
     {
@@ -62,34 +77,4 @@ class ReservationService
 
         return $subTotal;
     }
-
-    private function dispatchEventsAfterCommit(
-         int   $reservationId ,
-         array $serviceIds ,
-         float $subTotal ,
-         array $data){
-
-
-        $userId = (int) auth()->id();
-
-
-
-        DB::afterCommit(function() use($reservationId , $userId , $serviceIds , $subTotal ,  $data){
-
-            ReservationCreatedEvent::dispatch(
-                $reservationId ,
-                $userId ,
-                $serviceIds ,
-                $subTotal ,
-                $data
-            );
-
-        });
-
-
-
-
-    }
-
-
 }

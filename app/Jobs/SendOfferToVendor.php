@@ -31,52 +31,52 @@ class SendOfferToVendor implements ShouldQueue
         $this->data          = $data ;
     }
 
-
     public function handle(): void
     {
-
         logger()->info("SendOffersToVendorsJob started for reservation {$this->reservationId}");
 
-       try {
-
+        try {
             $requiredCount = count($this->servicesIds);
 
             $vendorIds = DB::table('vendor_services as vs')
-                                ->join('vendors as v' , 'v.id' , '=' , 'vs.vendor_id')
-                                ->where('v.is_active' , 1)
-                                ->where('v.type' , $this->data['res_type'])
-                                ->whereNotNull('v.fcm_token')
-                                ->whereIn('vs.service_id', $this->servicesIds)
-                                ->groupBy('vs.vendor_id')
-                                ->havingRaw('COUNT(DISTINCT vs.service_id) = ?', [$requiredCount])
-                                ->pluck('vs.vendor_id')
-                                ->unique();
+                ->join('vendors as v', 'v.id', '=', 'vs.vendor_id')
+                ->where('v.is_active', 1)
+                ->where('v.type', $this->data['res_type'])
+                ->whereNotNull('v.fcm_token')
+                ->whereIn('vs.service_id', $this->servicesIds)
+                ->groupBy('vs.vendor_id')
+                ->havingRaw('COUNT(DISTINCT vs.service_id) = ?', [$requiredCount])
+                ->pluck('vs.vendor_id')
+                ->unique();
 
+            if ($vendorIds->isEmpty()) {
+                logger()->warning("No vendors available for reservation {$this->reservationId}");
+                return;
+            }
 
-                                if ($vendorIds->isEmpty()) {
-                                    logger()->warning("No vendors available for reservation {$this->reservationId}");
-                                }
+            foreach ($vendorIds->chunk(1000) as $vendorChunk) {
 
+                $offers = $vendorChunk->map(fn($vendorId) => [
+                    'order_id'   => $this->reservationId,
+                    'user_id'    => $this->userId,
+                    'vendor_id'  => $vendorId,
+                    'status'     => 1,
+                    'created_at' => now(),
+                ]);
 
-                                $offers = $vendorIds->map(fn($vendorId) => [
-                                    'order_id'   => $this->reservationId,
-                                    'user_id'    => $this->userId,
-                                    'vendor_id'  => $vendorId,
-                                    'status'     => 1,
-                                    'created_at' => now(),
-                                ]);
+                DB::table('offers')->insert($offers->toArray());
+            }
 
+            logger()->info("SendOffersToVendorsJob done for reservation {$this->reservationId}");
 
-                                foreach ($offers->chunk(1000) as $chunk) {
-                                    DB::table('offers')->insert($chunk->toArray());
-                                }
+        } catch (\Throwable $e) {
 
-            ;
-
-       } catch (\Throwable $e) {
             logger()->error("SendOffersToVendorsJob error: " . $e->getMessage());
-
             throw $e;
-       }
+        }
     }
+
+
+
+
 }

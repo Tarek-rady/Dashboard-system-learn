@@ -35,8 +35,8 @@ return [
         ],
     ],
 
-    'firebase' => [
-        'server_key' => env('FIREBASE_SERVER_KEY'),
+    'credentials' => [
+        'file' => storage_path(env('FIREBASE_CREDENTIALS')),
     ],
 
 ];

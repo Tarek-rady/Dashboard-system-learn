@@ -18,7 +18,7 @@ class VendorSeeder extends Seeder
         Model::unsetEventDispatcher();
 
         $fake         = Factory::create();
-        $totalVendors = 80000;
+        $totalVendors = 120000;
         $chunkSize    = 2000;
 
         $startDate = CarbonImmutable::now();
@@ -36,7 +36,7 @@ class VendorSeeder extends Seeder
                 'email_verified_at' => $createdAt,
                 'password'   => 'password',
                 'fcm_token'  => Str::random(32),
-                'type'       => rand(1,3) ,
+                'type'       =>1 ,
                 'is_active'  => 1 ,
                 'lat'               => '30.9421611' ,
                 'lng'               => '31.2950298' ,
@@ -56,34 +56,6 @@ class VendorSeeder extends Seeder
             DB::table('vendors')->insert($vendors);
         }
 
-        $vendorIds = DB::table('vendors')->pluck('id')->all();
 
-        $serviceIds = DB::table('services')->pluck('id')->all();
-
-        $relationRows = [];
-        $chunkSize = 5000;
-
-        foreach ($vendorIds as $vendorId) {
-
-            $selected = array_rand($serviceIds, 6);
-
-            foreach ($selected as $index) {
-                $relationRows[] = [
-                    'vendor_id'  => $vendorId,
-                    'service_id' => $serviceIds[$index],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-
-            if (count($relationRows) >= $chunkSize) {
-                DB::table('vendor_services')->insert($relationRows);
-                $relationRows = [];
-            }
-        }
-
-        if (!empty($relationRows)) {
-            DB::table('vendor_services')->insert($relationRows);
-        }
     }
 }
