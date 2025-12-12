@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class ,
-            CategorySeeder::class ,
-            ServiceSeeder::class ,
-            VendorSeeder::class ,
-            VendorServiceSeeder::class ,
-            TagSeeder::class ,
+            // CategorySeeder::class ,
+            // ServiceSeeder::class ,
+            // VendorSeeder::class ,
+            // VendorServiceSeeder::class ,
+            // TagSeeder::class ,
         ]);
     }
 }

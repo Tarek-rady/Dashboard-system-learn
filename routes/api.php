@@ -24,4 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 Route::get('home'            , [HomeController::class , 'home']);
+Route::post('add-tag'        , [HomeController::class , 'add_tag']);
+Route::get('get-tag/{id}'    , [HomeController::class , 'get_tag']);
+Route::post('update-tag/{id}'    , [HomeController::class , 'update_tag']);
+Route::delete('delete-tag/{id}'    , [HomeController::class , 'delete_tag']);
 Route::get('payment-methods' , [ReservationController::class , 'payment']);
