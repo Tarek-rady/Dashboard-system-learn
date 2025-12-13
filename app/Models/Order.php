@@ -11,6 +11,18 @@ class Order extends Model
 
     protected $guarded = [];
 
+    public function scopeCardFields($q){
+
+        return  $q->select(
+            [
+                'id' , 'user_id' , 'status' , 'code' , 'payment' , 'cost' , 'total_discount' , 'tax' ,
+                 'total' , 'time_type' , 'res_type' , 'date' , 'start_time' ,
+                'end_time' , 'lat' , 'lng' , 'location' , 'created_at'
+            ]
+        );
+
+    }
+
     public function vendor(){ return $this->belongsTo(Vendor::class);}
     public function user(){ return $this->belongsTo(User::class);}
     public function items(){ return $this->hasMany(Item::class , 'order_id');}

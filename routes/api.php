@@ -16,7 +16,9 @@ Route::post('login' , [AuthController::class , 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 
 
-    Route::post('create-reservation' , [ReservationController::class , 'create']);
+    Route::post('create-reservation'      , [ReservationController::class , 'create']);
+    Route::get('get-reservations'         , [ReservationController::class , 'get_reservations']);
+    Route::get('reservation-details/{id}' , [ReservationController::class , 'reservation_details']);
 
 
 

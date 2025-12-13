@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
-            $table->foreignId('vendor_id')->nullable()->references('id')->on('vendors')->cascadeOnDelete();
-            $table->integer('status')->default(1);
-            $table->string('code')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete()->index();
+            $table->foreignId('vendor_id')->nullable()->constrained()->nullOnDelete();
+            $table->integer('status')->default(1)->index();
+            $table->string('code')->nullable()->index();
             $table->integer('payment')->default();
             $table->timestamp('date_requested')->nullable();
             $table->timestamp('date_accepted')->nullable();
@@ -30,14 +30,20 @@ return new class extends Migration
             $table->string('coupon')->nullable();
             $table->longText('msg')->nullable();
             $table->boolean('read')->default(0);
-            $table->enum('time_type' , ['immediate' , 'schedule'])->nullable();
-            $table->integer('res_type')->default(1);
+            $table->integer('time_type')->default(1)->index();
+            $table->integer('res_type')->default(1)->index();
             $table->date('date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->double('lat')->nullable();
             $table->double('lng')->nullable();
             $table->string('location')->nullable();
+            $table->timestamps();
+
+
+            $table->index(['status', 'created_at']);
+            $table->index(['time_type', 'res_type', 'created_at']);
+            $table->index(['user_id' , 'created_at']);
 
         });
     }

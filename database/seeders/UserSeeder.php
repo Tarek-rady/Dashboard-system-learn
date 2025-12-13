@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
         Model::unsetEventDispatcher();
 
         $fake       = Factory::create();
-        $totalUsers = 60000;
+        $totalUsers = 4;
         $chunkSize  = 2000;
 
 
